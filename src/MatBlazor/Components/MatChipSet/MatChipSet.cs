@@ -29,6 +29,9 @@ namespace MatBlazor
         /// </summary>
         [Parameter]
         public bool Choice { get; set; }
+        
+        [Parameter]
+        public bool UseOrdinaryChipCheck { get; set; }
 
         /// <summary>
         ///  Enables multiple-choice selection from the set of chips. Chips must be "Checkable" for this to work.
@@ -78,10 +81,21 @@ namespace MatBlazor
                 }
                 else
                 {
-                    var selected = new HashSet<MatChip>(value);
-                    foreach (var chip in _chips)
+                    if (UseOrdinaryChipCheck)
                     {
-                        chip.IsSelected = selected.Contains(chip);
+                        var selected = new HashSet<string>(value.Select(x => x.Label));
+                        foreach (var chip in _chips)
+                        {
+                            chip.IsSelected = selected.Contains(chip.Label);
+                        }
+                    }
+                    else
+                    {
+                        var selected = new HashSet<MatChip>(value);
+                        foreach (var chip in _chips)
+                        {
+                            chip.IsSelected = selected.Contains(chip); 
+                        }
                     }
                 }
                 this.InvokeAsync(StateHasChanged);
